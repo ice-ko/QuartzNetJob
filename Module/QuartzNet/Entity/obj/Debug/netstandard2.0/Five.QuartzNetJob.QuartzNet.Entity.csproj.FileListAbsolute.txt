@@ -1,8 +1,0 @@
-E:\projects\QuartzNetJob\Module\QuartzNet\Entity\bin\Debug\netstandard2.0\Five.QuartzNetJob.QuartzNet.Entity.deps.json
-E:\projects\QuartzNetJob\Module\QuartzNet\Entity\bin\Debug\netstandard2.0\Five.QuartzNetJob.QuartzNet.Entity.dll
-E:\projects\QuartzNetJob\Module\QuartzNet\Entity\bin\Debug\netstandard2.0\Five.QuartzNetJob.QuartzNet.Entity.pdb
-E:\projects\QuartzNetJob\Module\QuartzNet\Entity\obj\Debug\netstandard2.0\Five.QuartzNetJob.QuartzNet.Entity.csproj.CoreCompileInputs.cache
-E:\projects\QuartzNetJob\Module\QuartzNet\Entity\obj\Debug\netstandard2.0\Five.QuartzNetJob.QuartzNet.Entity.AssemblyInfoInputs.cache
-E:\projects\QuartzNetJob\Module\QuartzNet\Entity\obj\Debug\netstandard2.0\Five.QuartzNetJob.QuartzNet.Entity.AssemblyInfo.cs
-E:\projects\QuartzNetJob\Module\QuartzNet\Entity\obj\Debug\netstandard2.0\Five.QuartzNetJob.QuartzNet.Entity.dll
-E:\projects\QuartzNetJob\Module\QuartzNet\Entity\obj\Debug\netstandard2.0\Five.QuartzNetJob.QuartzNet.Entity.pdb

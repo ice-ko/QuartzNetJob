@@ -1,9 +1,0 @@
-E:\projects\QuartzNetJob\Module\DataService\Models\bin\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.deps.json
-E:\projects\QuartzNetJob\Module\DataService\Models\bin\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.dll
-E:\projects\QuartzNetJob\Module\DataService\Models\bin\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.pdb
-E:\projects\QuartzNetJob\Module\DataService\Models\obj\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.csprojResolveAssemblyReference.cache
-E:\projects\QuartzNetJob\Module\DataService\Models\obj\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.csproj.CoreCompileInputs.cache
-E:\projects\QuartzNetJob\Module\DataService\Models\obj\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.AssemblyInfoInputs.cache
-E:\projects\QuartzNetJob\Module\DataService\Models\obj\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.AssemblyInfo.cs
-E:\projects\QuartzNetJob\Module\DataService\Models\obj\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.dll
-E:\projects\QuartzNetJob\Module\DataService\Models\obj\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.pdb
