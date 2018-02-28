@@ -1,0 +1,15 @@
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\bin\Release\netstandard2.0\QuartzNet3.Core.deps.json
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\bin\Release\netstandard2.0\QuartzNet3.Core.dll
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\bin\Release\netstandard2.0\QuartzNet3.Core.pdb
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\bin\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.dll
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\bin\Release\netstandard2.0\Five.QuartzNetJob.Utils.Tool.dll
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\bin\Release\netstandard2.0\QuartzNet.Entity.dll
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\bin\Release\netstandard2.0\Five.QuartzNetJob.DataService.Models.pdb
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\bin\Release\netstandard2.0\Five.QuartzNetJob.Utils.Tool.pdb
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\bin\Release\netstandard2.0\QuartzNet.Entity.pdb
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\obj\Release\netstandard2.0\QuartzNet3.Core.csprojResolveAssemblyReference.cache
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\obj\Release\netstandard2.0\QuartzNet3.Core.csproj.CoreCompileInputs.cache
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\obj\Release\netstandard2.0\QuartzNet3.Core.AssemblyInfoInputs.cache
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\obj\Release\netstandard2.0\QuartzNet3.Core.AssemblyInfo.cs
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\obj\Release\netstandard2.0\QuartzNet3.Core.dll
+E:\projects\QuartzNetJob\Module\QuartzNet\QuartzNet3\obj\Release\netstandard2.0\QuartzNet3.Core.pdb

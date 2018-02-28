@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>dotnet-aspnet-codegenerator-design</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Extensions.CommandLineUtils.ArgumentEscaper">
+            <summary>
+            A utility for escaping arguments for new processes.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.CommandLineUtils.ArgumentEscaper.EscapeAndConcatenate(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Undo the processing which took place to create string[] args in Main, so that the next process will
+            receive the same string[] args.
+            </summary>
+            <remarks>
+            See https://blogs.msdn.microsoft.com/twistylittlepassagesallalike/2011/04/23/everyone-quotes-command-line-arguments-the-wrong-way/
+            </remarks>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Extensions.CommandLineUtils.DotNetMuxer">
+            <summary>
+            Utilities for finding the "dotnet.exe" file from the currently running .NET Core application
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.CommandLineUtils.DotNetMuxer.MuxerPath">
+            <summary>
+            The full filepath to the .NET Core muxer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.CommandLineUtils.DotNetMuxer.MuxerPathOrDefault">
+            <summary>
+            Finds the full filepath to the .NET Core muxer,
+            or returns a string containing the default name of the .NET Core muxer ('dotnet').
+            </summary>
+            <returns>The path or a string named 'dotnet'</returns>
+        </member>
+        <member name="T:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.AppDesc">
+            <summary>
+              Looks up a localized string similar to Code generation for Asp.net Core.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.ConfigurationOptionDesc">
+            <summary>
+              Looks up a localized string similar to Configuration for the project (Possible values: Debug/ Release).
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.ConnectToServerError">
+            <summary>
+              Looks up a localized string similar to Could not connect to port {0}..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.EnableTracingMessage">
+            <summary>
+              Looks up a localized string similar to To see more information, enable tracing by setting environment variable 'codegen_trace' = 1..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.FileSystemChangeMessageNotSupported">
+            <summary>
+              Looks up a localized string similar to Server does not support File System change messages. HostId: &apos;{0}&apos;, ProtocolVersion: &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.GenericErrorMessage">
+            <summary>
+               Looks up a localized string similar to Scaffolding failed..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.ProjectInformationError">
+            <summary>
+              Looks up a localized string similar to Could not get ProjectInformation..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.ProjectPathOptionDesc">
+            <summary>
+              Looks up a localized string similar to Path to .csproj file in the project..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.RunWithoutSimulationMode">
+            <summary>
+              Looks up a localized string similar to Please run scaffolding without --simulation-mode switch.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.SimulationModeOptionDesc">
+            <summary>
+              Looks up a localized string similar to Specifies whether to persist any file changes..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.Web.CodeGeneration.Design.Resources.TargetFrameworkOptionDesc">
+            <summary>
+              Looks up a localized string similar to Target Framework to use. (Short folder name of the tfm. eg. net46).
+            </summary>
+        </member>
+    </members>
+</doc>

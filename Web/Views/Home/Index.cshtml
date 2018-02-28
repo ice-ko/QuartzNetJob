@@ -1,0 +1,427 @@
+﻿@{
+    ViewData["Title"] = "任务调度管理";
+}
+
+<section class="content-header">
+    <h1>
+        任务调度管理
+        <!-- <small>Control panel</small>-->
+    </h1>
+    <!-- <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>-->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-right">
+                <a class="btn btn-info " data-toggle="modal" data-target="#modalAdd" onclick="resertForm();">添加任务</a>
+            </div>
+            <p></p>
+        </div>
+    </div>
+    <table class="table display dataTable" id="js_table">
+        <thead>
+            <tr>
+                <th style="text-align:center">任务名称</th>
+                <th style="text-align:center">任务组</th>
+                <th style="text-align:center">触发器类型</th>
+                <th style="text-align:center">url</th>
+                <th style="text-align:center">时间表达式</th>
+                <th style="text-align:center">执行次数</th>
+                <th style="text-align:center">间隔时间(秒)</th>
+                <th style="text-align:center">状态</th>
+                <th style="text-align:center">程序集</th>
+                <th style="text-align:center">IJob实现类</th>
+                <th style="text-align:center">开始时间</th>
+                <th style="text-align:center">结束时间</th>
+                <th style="text-align:center">任务描述</th>
+                <th style="text-align:center">操作</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</section>
+
+<div class="modal" id="modalAdd" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form role="form" id="frm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">添加任务</h4>
+                    <input type="hidden" id="jobId" name="JobId" value="" />
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="JobName">任务名称</label>
+                        <input type="text" class="form-control" id="jobName" name="JobName" placeholder="请输入名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="JobGroup">任务组</label>
+                        <input type="text" class="form-control" id="jobGroup" name="JobGroup" placeholder="请输入名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="TriggerType">触发器类型</label>
+                        <select id="triggerType" name="TriggerType" class="form-control">
+                            <option value="0">simple</option>
+                            <option value="1">cron </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Url">url</label>
+                        <input type="text" class="form-control" id="url" name="Url" placeholder="请输入名称">
+                    </div>
+                    <div class="form-group" id="cron-div" style="display:none">
+                        <label for="Cron">执行周期表达式</label>
+                        <input type="text" class="form-control" id="cron" name="Cron" placeholder="请输入名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="BeginTime">开始时间</label>
+                        <input type="text" class="form-control" id="beginTime" name="BeginTime" placeholder="请选择开始时间">
+                    </div>
+                    <div class="form-group">
+                        <label for="EndTime">结束时间</label>
+                        <input type="text" class="form-control" id="endTime" name="EndTime" placeholder="请选择结束时间">
+                    </div>
+                    <div class="form-group" id="runTimes-div">
+                        <label for="RunTimes">执行次数(0不限制次数)</label>
+                        <input type="text" class="form-control" id="runTimes" name="RunTimes" placeholder="请输入执行次数">
+                    </div>
+                    <div class="form-group">
+                        <label for="IntervalSecond">执行间隔时间（秒为单位）</label>
+                        <input type="text" class="form-control" id="intervalSecond" name="IntervalSecond" placeholder="请输入执行间隔">
+                    </div>
+                    <div class="form-group">
+                        <label for="IntervalSecond">程序集</label>
+                        <input type="text" class="form-control" id="assemblyName" name="AssemblyName" placeholder="请输入程序集">
+                    </div>
+                    <div class="form-group">
+                        <label for="IntervalSecond">IJob的实现类</label>
+                        <input type="text" class="form-control" id="insideClass" name="ClassName" placeholder="请输入IJob实现类">
+                    </div>
+                    <div class="form-group">
+                        <label for="Remark">任务描述</label>
+                        <input type="text" class="form-control" id="remark" name="Remark" placeholder="请输入描述">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" id="save" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="delcfmOverhaul">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>您确认要删除该条信息吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    取消
+                </button>
+                <button type="button" class="btn btn-primary" id="deleteHaulBtn">
+                    确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="~/plugin/datatables/css/jquery.dataTables.css" rel="stylesheet" />
+<link href="~/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/plugin/datatables/js/jquery.dataTables.js"></script>
+<script src="~/plugin/datatables/js/dataTables.bootstrap.js"></script>
+<script src="~/plugin/jquery-validate/jquery.validate.min.js"></script>
+<script src="~/plugin/jquery-validate/localization/messages_zh-CN.min.js"></script>
+<script src="~/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script src="~/plugin/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#beginTime,#endTime").datetimepicker({
+            format: 'yyyy-mm-dd hh:ii',
+            language: 'zh-CN',
+            autoclose: true,
+            todayBtn: true,
+            pickerPosition: "bottom-left",
+            startDate: new Date()
+        });
+
+        //渲染列表  页面初始化时
+        var t = $("#js_table").DataTable({
+            "processing": true,
+            "searching": false,//关闭搜索框
+            "serverSide": true,//服务器分页
+            "bAutoWidth": false,
+            "ajax": {
+                "url": "/Home/GetSchedule",
+                "type": "post",
+                "dataSrc": "list",//这里是后台返回的数据对象
+                "data": function (d) {//d 是原始的发送给服务器的数据，默认很长。
+                    var param = {};//因为服务端排序，可以新建一个参数对象
+                    param.start = d.start;//开始的序号
+                    param.length = d.length;//要取的数据的条数
+                    return param;//自定义需要传递的参数。
+                }
+            }, "createdRow": function (row, data, index) {
+                /* 设置表格中的内容居中 */
+                $('td', row).attr("class", "text-center");
+            },
+            //定义列: 取相应属性字段
+            "columns": [
+
+                { "data": "jobName" },
+                { "data": "jobGroup" },
+                {
+                    "data": "triggerType",
+                    "render": function (data, type, full, callback) {
+                        switch (data) {
+                            case 0: return "simple"; break;
+                            case 1: return "cron"; break;
+                        }
+                    }
+                },
+                { "data": "url" },
+                { "data": "cron" },
+                { "data": "runTimes" },
+                { "data": "intervalSecond" },
+                {
+                    "data": "jobStatus",
+                    "render": function (data, type, full, callback) {
+                        // 0 停止；1 启用；
+                        switch (data) {
+                            case 0: return "停止"; break;
+                            case 1: return "启用"; break;
+                        }
+                    }
+                },
+                { "data": "assemblyName" },
+                { "data": "className" },
+                {
+                    "data": "beginTime",
+                    "render": function (data, type, full, callback) {
+                        return dataTime(data);
+                    }
+                },
+                {
+                    "data": "endTime",
+                    "render": function (data, type, full, callback) {
+                        if (data != null) {
+                            return data != "0001-01-01T00:00:00" ? dataTime(data) : null;
+                        }
+                        return data;
+                    }
+                },
+                { "data": "remark" },
+                //操作列
+                {
+                    "data": "jobId",//json
+                    "render": function (data, type, full, callback) {
+                        var executeJob = full.jobStatus == 1 ? "disabled" : "";
+                        var stop = full.jobStatus == 0 ? "disabled" : "";
+                        return (`<a class="btn bg-maroon btn-sm ${executeJob}" onclick="executeJob(${data});">执行</a>
+                                    <a class="btn btn-info btn-sm " data-toggle="modal" data-target="#modalAdd" onclick="getDetails(${data});">编辑</a>
+                                    <a class="btn btn-warning btn-sm ${stop}"  onclick="stopScheduleJob('${data}');" >停止</a>
+                                    <a class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delcfmOverhaul" onclick="deleteSchedule('${data}');" >删除</a>`
+                        );
+                    }
+                }
+            ],
+            "language": {
+                "lengthMenu": "每页 _MENU_ 条记录",
+                "zeroRecords": " ",
+                "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",
+                "infoEmpty": "无记录",
+                "infoFiltered": "(从 _MAX_ 条记录过滤)",
+                "search": "用户",
+                "processing": "载入中",
+                "paginate": {
+                    "first": "首页",
+                    "previous": "上一页",
+                    "next": "下一页",
+                    "last": "尾页"
+                }
+            },
+            "aLengthMenu": [
+                [10, 25, 50, 100], [10, 25, 50, 100]
+            ],
+            "paging": true,//分页
+            "pagingType": "full_numbers",//显示首页尾页
+            "ordering": false,//排序
+            "info": true,//信息
+            "initComplete": function (settings, data) {
+
+            },
+            "drawCallback": function (settings, data) {
+
+            }
+
+        });
+        //参数校验
+        $('#frm').validate({
+            focusInvalid: false,
+
+            rules: {
+                JobName: {
+                    required: true
+                },
+                JobGroup: {
+                    required: true
+                },
+                BeginTime: {
+                    required: true
+                }
+            },
+            messages: {
+
+            },
+            submitHandler: function (form) {
+                $.post("/Home/AddJobTask", $(form).serialize()).done(function (data) {
+                    var result = data;
+                    if (data.code == 1000) {
+                        $("#modalAdd").modal('toggle');
+                        layer.msg('操作成功', { icon: 1 });
+                        t.draw();
+                    } else {
+                        layer.msg('操作失败', { icon: 2 });
+                    }
+                });
+            }
+        });
+        $("#triggerType").change(function () {
+            if ($(this).val() == 1) {
+                $("#cron-div").show();
+                $("#cron").rules("add", {
+                    required: true
+                });
+                $("#runTimes-div").hide();
+            } else {
+                $("#cron-div").hide();
+                $("#runTimes-div").show();
+                $("#runTimes").rules("add", {
+                    required: true
+                });
+            }
+        })
+    });
+    //执行任务
+    function executeJob(Id) {
+        $.ajax({
+            url: "/home/ExecuteJob",
+            data: { Id: Id },
+            type: "post",
+            success: function (data) {
+                if (data.code == 1000) {
+                    $("#js_table").DataTable().draw();
+                    layer.msg('操作成功', { icon: 1 });
+                } else {
+                    layer.msg('操作失败', { icon: 2 });
+                }
+            }
+        })
+    }
+    //查询详情
+    function getDetails(Id) {
+        $.ajax({
+            url: "/home/getDetails",
+            data: { Id: Id },
+            type: "post",
+            success: function (data) {
+                $("#jobId").val(data.data.jobId);
+                $("#jobName").val(data.data.jobName);
+                $("#jobGroup").val(data.data.jobGroup);
+                $("#triggerType").val(data.data.triggerType);
+                $("#url").val(data.data.url);
+                if (data.data.triggerType == 1) {
+                    $("#cron").val(data.data.cron);
+                    $("#cron-div").show();
+                    $("#cron").rules("add", {
+                        required: true
+                    });
+                    $("#runTimes-div").hide();
+                } else {
+                    $("#runTimes").val(data.data.runTimes);
+                    $("#runTimes-div").show();
+                    $("#runTimes").rules("add", {
+                        required: true
+                    });
+                }
+                $("#beginTime").val(dataTime(data.data.beginTime));
+                $("#endTime").val(data.data.endTime == null ? null : dataTime(data.data.endTime));
+
+                $("#intervalSecond").val(data.data.intervalSecond);
+                $("#remark").val(data.data.remark);
+            }
+        })
+    }
+    //停止任务
+    function stopScheduleJob(Id) {
+        $.ajax({
+            url: "/home/stopScheduleJob",
+            data: { Id: Id },
+            type: "post",
+            success: function (data) {
+                if (data.code == 1000) {
+                    $("#js_table").DataTable().draw();
+                    layer.msg('操作成功', { icon: 1 });
+                } else {
+                    layer.msg('操作失败', { icon: 2 });
+                }
+            }
+        })
+    }
+    //删除任务
+    function deleteSchedule(Id) {
+        $("#deleteHaulBtn").click(function () {
+            $.ajax({
+                url: "/home/DeleteSchedule",
+                data: { Id: Id },
+                type: "post",
+                success: function (data) {
+                    if (data.code == 1000) {
+                        $("#js_table").DataTable().draw();
+                        layer.msg('操作成功', { icon: 1 });
+                        $("#delcfmOverhaul").modal('toggle');
+                    } else {
+                        layer.msg('操作失败', { icon: 2 });
+                    }
+                }
+            })
+        })
+    }
+    //时间戳转换
+    function dataTime(time) {
+        // 比如需要这样的格式 yyyy-MM-dd hh:mm:ss
+        var _date = new Date(time),
+            year = _date.getFullYear(), //年
+            month = _date.getMonth() + 1, //月
+            day = _date.getDate(), //日
+            hour = _date.getHours(), //时间
+            minute = _date.getMinutes(), //分钟
+            second = _date.getSeconds();//秒
+        month = month < 10 ? "0" + month : month;
+        day = day < 10 ? "0" + day : day;
+        minute = minute < 10 ? "0" + minute : minute;
+        return year + "-" + month + "-" + day + " " + hour + ":" + minute;
+    }
+    //清空表单
+    function resertForm() {
+        $('#frm')[0].reset();
+        $("#runTimes").rules("add", {
+            required: true
+        });
+    }
+</script>

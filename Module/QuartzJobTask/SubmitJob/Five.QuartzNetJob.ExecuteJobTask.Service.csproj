@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Quartz" Version="3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DataService\DataHelper\Five.QuartzNetJob.DataService.DataHelper.csproj" />
+    <ProjectReference Include="..\..\DataService\Models\Five.QuartzNetJob.DataService.Models.csproj" />
+    <ProjectReference Include="..\..\QuartzNet\Entity\QuartzNet.Entity.csproj" />
+    <ProjectReference Include="..\..\QuartzNet\QuartzNet3\QuartzNet3.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="dotnet-aspnet-codegenerator-design">
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.visualstudio.web.codegeneration.design\2.0.2\lib\netcoreapp2.0\dotnet-aspnet-codegenerator-design.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

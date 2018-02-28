@@ -1,0 +1,134 @@
+﻿@{
+    ViewData["Title"] = "任务调度管理";
+}
+
+<section class="content-header">
+    <h1>
+        日志管理
+        <!-- <small>Control panel</small>-->
+    </h1>
+    <!-- <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>-->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text-right">
+                @*<a class="btn btn-info " data-toggle="modal" data-target="#modalAdd">添加任务</a>*@
+            </div>
+            <p></p>
+        </div>
+    </div>
+    <table class="table display dataTable" id="js_table">
+        <thead>
+            <tr>
+                <th style="text-align:center">操作表名称</th>
+                <th style="text-align:center">描述</th>
+                <th style="text-align:center">日志类型</th>
+                <th style="text-align:center">创建时间</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</section>
+<link href="~/plugin/datatables/css/jquery.dataTables.css" rel="stylesheet" />
+<link href="~/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/plugin/datatables/js/jquery.dataTables.js"></script>
+<script src="~/plugin/datatables/js/dataTables.bootstrap.js"></script>
+<script>
+    $(document).ready(function () {
+
+        //渲染列表  页面初始化时
+        var t = $("#js_table").DataTable({
+            "processing": true,
+            "searching": false,//关闭搜索框
+            "serverSide": true,//服务器分页
+            "bAutoWidth": false,
+            "ajax": {
+                "url": "/Log/GetLog",
+                "type": "post",
+                "dataSrc": "list",//这里是后台返回的数据对象
+                "data": function (d) {//d 是原始的发送给服务器的数据，默认很长。
+                    var param = {};//因为服务端排序，可以新建一个参数对象
+                    param.start = d.start;//开始的序号
+                    param.length = d.length;//要取的数据的条数
+                    return param;//自定义需要传递的参数。
+                }
+            }, "createdRow": function (row, data, index) {
+                /* 设置表格中的内容居中 */
+                $('td', row).attr("class", "text-center");
+            },
+            //定义列: 取相应属性字段
+            "columns": [
+
+                { "data": "tableName" },
+                { "data": "describe" },
+                {
+                    "data": "type",
+                    "render": function (data, type, full, callback) {
+                        switch (data) {
+                            case 0: return "正常"; break;
+                            case 1: return "异常"; break;
+                        }
+                    }
+                },
+                {
+                    "data": "createTime",
+                    "render": function (data, type, full, callback) {
+                        return dataTime(data);
+                    }
+                }
+            ],
+            "language": {
+                "lengthMenu": "每页 _MENU_ 条记录",
+                "zeroRecords": " ",
+                "info": "当前 _START_ 条到 _END_ 条 共 _TOTAL_ 条",
+                "infoEmpty": "无记录",
+                "infoFiltered": "(从 _MAX_ 条记录过滤)",
+                "search": "用户",
+                "processing": "载入中",
+                "paginate": {
+                    "first": "首页",
+                    "previous": "上一页",
+                    "next": "下一页",
+                    "last": "尾页"
+                }
+            },
+            "aLengthMenu": [
+                [10, 25, 50, 100], [10, 25, 50, 100]
+            ],
+            "paging": true,//分页
+            "pagingType": "full_numbers",//显示首页尾页
+            "ordering": false,//排序
+            "info": true,//信息
+            "initComplete": function (settings, data) {
+
+            },
+            "drawCallback": function (settings, data) {
+
+            }
+
+        });
+
+    });
+    //时间戳转换
+    function dataTime(time) {
+        // 比如需要这样的格式 yyyy-MM-dd hh:mm:ss
+        var _date = new Date(time),
+            year = _date.getFullYear(), //年
+            month = _date.getMonth() + 1, //月
+            day = _date.getDate(), //日
+            hour = _date.getHours(), //时间
+            minute = _date.getMinutes(), //分钟
+            second = _date.getSeconds();//秒
+        month = month < 10 ? "0" + month : month;
+        day = day < 10 ? "0" + day : day;
+        minute = minute < 10 ? "0" + minute : minute;
+        return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+    }
+</script>

@@ -1,0 +1,13 @@
+E:\projects\QuartzNetJob\Web
+--output-path=obj\Any CPU\Release\netcoreapp2.0\
+--application-name=Five.QuartzNetJob.Web
+--content-root=E:\projects\QuartzNetJob\Web
+--file=E:\projects\QuartzNetJob\Web\Views\Home\About.cshtml
+--file=E:\projects\QuartzNetJob\Web\Views\Home\Contact.cshtml
+--file=E:\projects\QuartzNetJob\Web\Views\Home\Index.cshtml
+--file=E:\projects\QuartzNetJob\Web\Views\Log\Index.cshtml
+--file=E:\projects\QuartzNetJob\Web\Views\Shared\Error.cshtml
+--file=E:\projects\QuartzNetJob\Web\Views\Shared\_Layout.cshtml
+--file=E:\projects\QuartzNetJob\Web\Views\Shared\_ValidationScriptsPartial.cshtml
+--file=E:\projects\QuartzNetJob\Web\Views\_ViewImports.cshtml
+--file=E:\projects\QuartzNetJob\Web\Views\_ViewStart.cshtml

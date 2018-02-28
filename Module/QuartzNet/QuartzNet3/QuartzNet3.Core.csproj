@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="6.10.6" />
+    <PackageReference Include="Quartz" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DataService\Models\Five.QuartzNetJob.DataService.Models.csproj" />
+    <ProjectReference Include="..\..\Utils\Tool\Five.QuartzNetJob.Utils.Tool.csproj" />
+    <ProjectReference Include="..\Entity\QuartzNet.Entity.csproj" />
+  </ItemGroup>
+
+</Project>
