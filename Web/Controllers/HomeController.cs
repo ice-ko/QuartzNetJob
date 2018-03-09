@@ -107,7 +107,8 @@ namespace Five.QuartzNetJob.Web.Controllers
             var schedule = db.Queryable<Schedule>().InSingle(id);
 
             var scheduleEntity = DataMapper.MapperToModel(new ScheduleEntity(), schedule);
-
+            //给IJob设置参数
+            scheduleEntity.Agrs = new Dictionary<string, object> { { "orderId", id } };
             ScheduleManage.Instance.AddScheduleList(scheduleEntity);
             // 运行任务调度
             //var result = SchedulerCenter.Instance.RunScheduleJob<ScheduleManage, HttpRequestJobTask>(schedule.JobGroup, schedule.JobName).Result;

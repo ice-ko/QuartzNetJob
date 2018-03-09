@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="6.10.6" />
-    <PackageReference Include="Quartz" Version="3.0.2" />
+    <PackageReference Include="Quartz" Version="3.0.4" />
   </ItemGroup>
 
   <ItemGroup>
