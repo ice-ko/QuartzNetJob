@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Five.QuartzNetJob.Utils.Tool;
 using System.Reflection;
 using System.Collections.Generic;
+using QuartzNet3.Core.Server;
+using Quartz.Impl.Matchers;
 
 namespace QuartzNet3.Core
 {
@@ -48,7 +50,7 @@ namespace QuartzNet3.Core
                     //{ "quartz.jobStore.dataSource","myDS"},
                     //{ "quartz.dataSource.myDS.connectionString",AppSettingHelper.MysqlConnection},//连接字符串
                     //{ "quartz.dataSource.myDS.provider","MySql"},
-                    //{ "quartz.jobStore.useProperties","true"}
+                    //{ "quartz.jobStore.usePropert ies","true"}
 
                 };
                 StdSchedulerFactory factory = new StdSchedulerFactory(props);
@@ -78,6 +80,7 @@ namespace QuartzNet3.Core
                 t.UpdateScheduleStatus(scheduleModel);
                 //用给定的密钥恢复（取消暂停）IJobDetail
                 await this.Scheduler.Result.ResumeJob(new JobKey(jobName, jobGroup));
+
                 result = new BaseQuartzNetResult
                 {
                     Code = 1000,
@@ -88,9 +91,11 @@ namespace QuartzNet3.Core
             {
                 result = new BaseQuartzNetResult
                 {
-                    Code = -1
+                    Code = -1,
+                    Msg = addResult.Msg
                 };
             }
+
             return result;
         }
         /// <summary>
@@ -165,7 +170,6 @@ namespace QuartzNet3.Core
                 {
                     trigger = CreateSimpleTrigger(m);
                 }
-
                 // 告诉Quartz使用我们的触发器来安排作业
                 await this.Scheduler.Result.ScheduleJob(job, trigger);
 
@@ -198,10 +202,7 @@ namespace QuartzNet3.Core
                     //删除已经存在任务
                     await this.Scheduler.Result.DeleteJob(jk);
                 }
-                //反射获取任务执行类
-                // var jobType = FileHelper.GetAbsolutePath(m.AssemblyName, m.AssemblyName + "." + m.ClassName);
                 // 定义这个工作，并将其绑定到我们的IJob实现类
-                //IJobDetail job = new JobDetailImpl(m.JobName, m.JobGroup, jobType);
                 IJobDetail job = JobBuilder.CreateForAsync<T>().WithIdentity(m.JobName, m.JobGroup).Build();
                 // 创建触发器
                 ITrigger trigger;
@@ -214,7 +215,10 @@ namespace QuartzNet3.Core
                 {
                     trigger = CreateSimpleTrigger(m);
                 }
-
+                // 设置监听器
+                JobListener listener = new JobListener();
+                // IMatcher<JobKey> matcher = KeyMatcher<JobKey>.KeyEquals(job.Key);
+                this.Scheduler.Result.ListenerManager.AddJobListener(listener, GroupMatcher<JobKey>.AnyGroup());
                 // 告诉Quartz使用我们的触发器来安排作业
                 await this.Scheduler.Result.ScheduleJob(job, trigger);
 
@@ -235,12 +239,22 @@ namespace QuartzNet3.Core
         /// <param name="jobName">任务名称</param>
         /// <param name="isDelete">停止并删除任务</param>
         /// <returns></returns>
-        public BaseQuartzNetResult StopScheduleJob<T>(string jobGroup, string jobName, bool isDelete = false) where T : ScheduleManage, new()
+        public async Task<BaseQuartzNetResult> StopScheduleJob<T>(string jobGroup, string jobName, bool isDelete = false) where T : ScheduleManage, new()
         {
-            BaseQuartzNetResult result;
+            var result = new BaseQuartzNetResult();
             try
             {
-                this.Scheduler.Result.PauseJob(new JobKey(jobName, jobGroup));
+                //检查任务是否存在
+                var jk = new JobKey(jobName, jobGroup);
+                if (!await Scheduler.Result.CheckExists(jk))
+                {
+                    return new BaseQuartzNetResult
+                    {
+                        Code = -1,
+                        Msg = jobName + "任务未运行"
+                    };
+                }
+                await this.Scheduler.Result.PauseJob(jk);
                 if (isDelete)
                 {
                     Activator.CreateInstance<T>().RemoveScheduleModel(jobGroup, jobName);
@@ -248,7 +262,7 @@ namespace QuartzNet3.Core
                 result = new BaseQuartzNetResult
                 {
                     Code = 1000,
-                    Msg = "停止任务计划成功！"
+                    Msg = "停止任务成功！"
                 };
             }
             catch (Exception ex)
@@ -256,7 +270,7 @@ namespace QuartzNet3.Core
                 result = new BaseQuartzNetResult
                 {
                     Code = -1,
-                    Msg = "停止任务计划失败"
+                    Msg = "停止任务失败"
                 };
             }
             return result;
@@ -266,25 +280,42 @@ namespace QuartzNet3.Core
         /// </summary>
         /// <param name="jobName">任务名称</param>
         /// <param name="jobGroup">任务分组</param>
-        public async void ResumeJob(string jobName, string jobGroup)
+        public async Task<BaseQuartzNetResult> ResumeJob(string jobName, string jobGroup)
         {
+            var result = new BaseQuartzNetResult();
             try
             {
                 //检查任务是否存在
                 var jk = new JobKey(jobName, jobGroup);
-                if (await this.Scheduler.Result.CheckExists(jk))
+                if (!await Scheduler.Result.CheckExists(jk))
                 {
-                    //任务已经存在则暂停任务
-                    await this.Scheduler.Result.ResumeJob(jk);
-                    await Console.Out.WriteLineAsync(string.Format("任务“{0}”恢复运行", jobName));
+                    return new BaseQuartzNetResult
+                    {
+                        Code = -1,
+                        Msg = jobName + "任务未运行"
+                    };
                 }
+                //任务已经存在则恢复运行暂停任务
+                await this.Scheduler.Result.ResumeJob(jk);
+                await Console.Out.WriteLineAsync(string.Format("任务“{0}”恢复运行", jobName));
+                result = new BaseQuartzNetResult
+                {
+                    Code = 1000,
+                    Msg = "恢复运行任务成功！"
+                };
             }
             catch (Exception ex)
             {
                 await Console.Out.WriteLineAsync(string.Format("恢复任务失败！{0}", ex));
+                result = new BaseQuartzNetResult
+                {
+                    Code = -1,
+                    Msg = "恢复运行任务失败"
+                };
             }
+            return result;
         }
-       
+
         /// <summary>
         /// 停止任务调度
         /// </summary>

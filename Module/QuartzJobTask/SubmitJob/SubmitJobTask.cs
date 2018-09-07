@@ -8,8 +8,12 @@ using System.Threading.Tasks;
 
 namespace Five.QuartzNetJob.ExecuteJobTask.Service
 {
-    public class SubmitJobTask:IJob
+    public class SubmitJobTask : IJob
     {
+
+        public SubmitJobTask() {
+
+        }
         public async Task Execute(IJobExecutionContext context)
         {
             var manage = new ScheduleManage();
@@ -21,7 +25,7 @@ namespace Five.QuartzNetJob.ExecuteJobTask.Service
             };
             manage.UpdateScheduleRunStatus(schedule);
             var model = manage.GetScheduleModel(context.JobDetail.Key.Group, context.JobDetail.Key.Name);
-            await Console.Out.WriteLineAsync(string.Format("试一试:{0}{1}{2}", schedule.JobGroup,schedule.JobName,schedule.RunStatus));
+            await Console.Out.WriteLineAsync(string.Format("试一试:任务分组：{0}任务名称：{1}任务状态：{2}", schedule.JobGroup, schedule.JobName, schedule.RunStatus));
         }
     }
 }

@@ -13,6 +13,7 @@ using Five.QuartzNetJob.Web.Models;
 using SqlSugar;
 using Five.QuartzNetJob.Utils.Tool;
 using System.Reflection;
+using Five.QuartzNetJob.ExecuteJobTask.Service;
 
 namespace Five.QuartzNetJob.Web.Controllers
 {
@@ -25,7 +26,10 @@ namespace Five.QuartzNetJob.Web.Controllers
             //db.CodeFirst.InitTables(typeof(OperateLog), typeof(OperateLog));
             return View();
         }
-
+        public IActionResult About()
+        {
+            return View();
+        }
         /// <summary>
         /// 查询数据
         /// </summary>
@@ -35,7 +39,7 @@ namespace Five.QuartzNetJob.Web.Controllers
         public ActionResult GetSchedule(int start, int length)
         {
             var db = DataHelper.GetInstance();
-            var schedule = db.Queryable<Schedule>().OrderBy(o => o.JobId).Skip(start).Take(length).ToList();
+            var schedule = db.Queryable<Schedule>().Where(w => w.Valid == 1).OrderBy(o => o.JobId).Skip(start).Take(length).ToList();
             var count = db.Queryable<Schedule>().Count();
             Dictionary<string, object> dic = new Dictionary<string, object>
             {
@@ -96,6 +100,7 @@ namespace Five.QuartzNetJob.Web.Controllers
             }
             return base.Json(new QuartzNetJob.Web.Models.BaseResult { Code = MsgCode.Success, Msg = "ok" });
         }
+
         /// <summary>
         /// 执行任务
         /// </summary>
@@ -111,8 +116,15 @@ namespace Five.QuartzNetJob.Web.Controllers
             scheduleEntity.Agrs = new Dictionary<string, object> { { "orderId", id } };
             ScheduleManage.Instance.AddScheduleList(scheduleEntity);
             // 运行任务调度
-            //var result = SchedulerCenter.Instance.RunScheduleJob<ScheduleManage, HttpRequestJobTask>(schedule.JobGroup, schedule.JobName).Result;
-            var result = SchedulerCenter.Instance.RunScheduleJob<ScheduleManage>(schedule.JobGroup, schedule.JobName).Result;
+            BaseQuartzNetResult result;
+            if (schedule.TriggerType == 0)
+            {
+                result = SchedulerCenter.Instance.RunScheduleJob<ScheduleManage, SubmitJobTask>(schedule.JobGroup, schedule.JobName).Result;
+            }
+            else
+            {
+                result = SchedulerCenter.Instance.RunScheduleJob<ScheduleManage>(schedule.JobGroup, schedule.JobName).Result;
+            }
             Console.Out.WriteLineAsync("任务执行状态：" + result.Msg);
             if (result.Code == 1000)
             {
@@ -140,10 +152,11 @@ namespace Five.QuartzNetJob.Web.Controllers
         public IActionResult StopScheduleJob(int id)
         {
             var db = DataHelper.GetInstance();
+            //根据任务编号获取任务详情
             var schedule = db.Queryable<Schedule>().InSingle(id);
-            // 运行任务调度
-            var result = SchedulerCenter.Instance.StopScheduleJob<ScheduleManage>(schedule.JobGroup, schedule.JobName, true);
-            if (result.Code == 1000)
+            //停止指定任务
+            var result = SchedulerCenter.Instance.StopScheduleJob<ScheduleManage>(schedule.JobGroup, schedule.JobName);
+            if (result.Result.Code == 1000)
             {
                 db.Updateable<Schedule>()
                   .UpdateColumns(it => new Schedule() { JobStatus = 0, UpdateTime = DateTime.Now })
@@ -156,7 +169,34 @@ namespace Five.QuartzNetJob.Web.Controllers
                     UpdateTime = DateTime.Now
                 });
             }
-            return base.Json(new BaseResult { Code = result.Code == 1000 ? MsgCode.Success : MsgCode.IsFail, Msg = result.Msg });
+            return base.Json(new BaseResult { Code = result.Result.Code == 1000 ? MsgCode.Success : MsgCode.IsFail, Msg = result.Result.Msg });
+        }
+        /// <summary>
+        /// 恢复暂停任务
+        /// </summary>
+        /// <param name="id">任务编号</param>
+        /// <returns></returns>
+        public IActionResult ResumeJob(int id)
+        {
+            var db = DataHelper.GetInstance();
+            //根据任务编号获取任务详情
+            var schedule = db.Queryable<Schedule>().InSingle(id);
+            //恢复运行指定暂停任务
+            var result = SchedulerCenter.Instance.ResumeJob(schedule.JobGroup, schedule.JobName);
+            if (result.Result.Code == 1000)
+            {
+                db.Updateable<Schedule>()
+                  .UpdateColumns(it => new Schedule() { JobStatus = 1, UpdateTime = DateTime.Now })
+                  .Where(it => it.JobId == id).ExecuteCommand();
+                OperatelogService.AddLog(new OperateLog
+                {
+                    TableName = "Schedule",
+                    Describe = "恢复暂停任务" + schedule.JobName + "成功",
+                    CreateTime = DateTime.Now,
+                    UpdateTime = DateTime.Now
+                });
+            }
+            return base.Json(new BaseResult { Code = result.Result.Code == 1000 ? MsgCode.Success : MsgCode.IsFail, Msg = result.Result.Msg });
         }
         /// <summary>
         /// 删除任务
@@ -165,7 +205,17 @@ namespace Five.QuartzNetJob.Web.Controllers
         public IActionResult DeleteSchedule(int id)
         {
             var db = DataHelper.GetInstance();
-            var schedule = db.Deleteable<Schedule>().In(id).ExecuteCommand();
+            //根据任务编号获取任务详情
+            var schedule = db.Queryable<Schedule>().InSingle(id);
+            //停止指定任务
+            var resultJob = SchedulerCenter.Instance.StopScheduleJob<ScheduleManage>(schedule.JobGroup, schedule.JobName, true);
+            //更改数据状态
+            var result = db.Updateable<Schedule>().UpdateColumns(it => new Schedule() { Valid = 0, UpdateTime = DateTime.Now })
+                  .Where(it => it.JobId == id).ExecuteCommand();
+            if (result <= 0)
+            {
+                return Json(new BaseResult { Code = MsgCode.IsFail });
+            }
             OperatelogService.AddLog(new OperateLog
             {
                 TableName = "Schedule",
@@ -173,7 +223,7 @@ namespace Five.QuartzNetJob.Web.Controllers
                 CreateTime = DateTime.Now,
                 UpdateTime = DateTime.Now
             });
-            return base.Json(new BaseResult { Code = MsgCode.Success });
+            return Json(new BaseResult { Code = MsgCode.Success });
         }
     }
 }

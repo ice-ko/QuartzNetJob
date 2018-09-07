@@ -37,7 +37,7 @@
                 <th style="text-align:center">IJob实现类</th>
                 <th style="text-align:center">开始时间</th>
                 <th style="text-align:center">结束时间</th>
-                <th style="text-align:center">任务描述</th>
+                @*<th style="text-align:center">任务描述</th>*@
                 <th style="text-align:center">操作</th>
             </tr>
         </thead>
@@ -90,7 +90,7 @@
                         <label for="RunTimes">执行次数(0不限制次数)</label>
                         <input type="text" class="form-control" id="runTimes" name="RunTimes" placeholder="请输入执行次数">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="IntervalSecond-div">
                         <label for="IntervalSecond">执行间隔时间（秒为单位）</label>
                         <input type="text" class="form-control" id="intervalSecond" name="IntervalSecond" placeholder="请输入执行间隔">
                     </div>
@@ -142,7 +142,8 @@
 <link href="~/plugin/datatables/css/jquery.dataTables.css" rel="stylesheet" />
 <link href="~/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 
-<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
 <script src="~/plugin/datatables/js/jquery.dataTables.js"></script>
 <script src="~/plugin/datatables/js/dataTables.bootstrap.js"></script>
 
@@ -151,6 +152,8 @@
 
 <script src="~/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 <script src="~/plugin/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="~/js/signalr.js"></script>
+<script src="~/js/site.js"></script>
 <script>
     $(document).ready(function () {
         $("#beginTime,#endTime").datetimepicker({
@@ -205,8 +208,8 @@
                     "render": function (data, type, full, callback) {
                         // 0 停止；1 启用；
                         switch (data) {
-                            case 0: return "停止"; break;
-                            case 1: return "启用"; break;
+                            case 0: return "暂停任务"; break;
+                            case 1: return "启用任务"; break;
                         }
                     }
                 },
@@ -227,7 +230,7 @@
                         return data;
                     }
                 },
-                { "data": "remark" },
+                //{ "data": "remark" },
                 //操作列
                 {
                     "data": "jobId",//json
@@ -235,8 +238,9 @@
                         var executeJob = full.jobStatus == 1 ? "disabled" : "";
                         var stop = full.jobStatus == 0 ? "disabled" : "";
                         return (`<a class="btn bg-maroon btn-sm ${executeJob}" onclick="executeJob(${data});">执行</a>
-                                    <a class="btn btn-info btn-sm " data-toggle="modal" data-target="#modalAdd" onclick="getDetails(${data});">编辑</a>
+                                    <a class="btn btn-primary btn-sm " data-toggle="modal" data-target="#modalAdd" onclick="getDetails(${data});">编辑</a>
                                     <a class="btn btn-warning btn-sm ${stop}"  onclick="stopScheduleJob('${data}');" >停止</a>
+                                    <a class="btn btn-info btn-sm ${executeJob}"  onclick="resumeJob('${data}');" >恢复运行</a>
                                     <a class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delcfmOverhaul" onclick="deleteSchedule('${data}');" >删除</a>`
                         );
                     }
@@ -310,12 +314,14 @@
                     required: true
                 });
                 $("#runTimes-div").hide();
+                $("#IntervalSecond-div").hide();
             } else {
                 $("#cron-div").hide();
                 $("#runTimes-div").show();
                 $("#runTimes").rules("add", {
                     required: true
                 });
+                $("#IntervalSecond-div").show();
             }
         })
     });
@@ -330,7 +336,7 @@
                     $("#js_table").DataTable().draw();
                     layer.msg('操作成功', { icon: 1 });
                 } else {
-                    layer.msg('操作失败', { icon: 2 });
+                    layer.msg(data.msg, { icon: 2 });
                 }
             }
         })
@@ -354,20 +360,24 @@
                         required: true
                     });
                     $("#runTimes-div").hide();
+                    $("#IntervalSecond-div").hide();
                 } else {
                     $("#runTimes").val(data.data.runTimes);
                     $("#runTimes-div").show();
                     $("#runTimes").rules("add", {
                         required: true
                     });
+                    $("#IntervalSecond-div").show();
                 }
                 $("#beginTime").val(dataTime(data.data.beginTime));
                 $("#endTime").val(data.data.endTime == null ? null : dataTime(data.data.endTime));
 
                 $("#intervalSecond").val(data.data.intervalSecond);
                 $("#remark").val(data.data.remark);
+                $("#assemblyName").val(data.data.assemblyName);
+                $("#insideClass").val(data.data.className);
             }
-        })
+        });
     }
     //停止任务
     function stopScheduleJob(Id) {
@@ -380,10 +390,26 @@
                     $("#js_table").DataTable().draw();
                     layer.msg('操作成功', { icon: 1 });
                 } else {
-                    layer.msg('操作失败', { icon: 2 });
+                    layer.msg(data.msg, { icon: 2 });
                 }
             }
-        })
+        });
+    }
+    //恢复暂停任务
+    function resumeJob(Id) {
+        $.ajax({
+            url: "/home/ResumeJob",
+            data: { Id: Id },
+            type: "post",
+            success: function (data) {
+                if (data.code == 1000) {
+                    $("#js_table").DataTable().draw();
+                    layer.msg('操作成功', { icon: 1 });
+                } else {
+                    layer.msg(data.msg, { icon: 2 });
+                }
+            }
+        });
     }
     //删除任务
     function deleteSchedule(Id) {
@@ -425,5 +451,9 @@
         $("#runTimes").rules("add", {
             required: true
         });
+        $("#triggerType").val("0");
+        $("#runTimes-div").show();
+        $("#IntervalSecond-div").show();
+        $("#cron-div").hide();
     }
 </script>

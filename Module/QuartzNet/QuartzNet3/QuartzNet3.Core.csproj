@@ -6,11 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="6.10.6" />
-    <PackageReference Include="Quartz" Version="3.0.4" />
+    <PackageReference Include="Quartz" Version="3.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\DataService\Models\Five.QuartzNetJob.DataService.Models.csproj" />
+    <ProjectReference Include="..\..\SignalR\Client\SignalR.Client.csproj" />
     <ProjectReference Include="..\..\Utils\Tool\Five.QuartzNetJob.Utils.Tool.csproj" />
     <ProjectReference Include="..\Entity\QuartzNet.Entity.csproj" />
   </ItemGroup>

@@ -1,0 +1,41 @@
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Quartz;
+using QuartzNet.Entity;
+using SignalR.Client;
+namespace QuartzNet3.Core.Server
+{
+    public class JobListener : IJobListener
+    {
+        public string Name => "JobListener";
+        public static int count = 0;
+        //job开始执行之前调用
+        public async Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await Console.Out.WriteLineAsync("job开始执行之前调用");
+        }
+
+        //job每次执行之后调用
+        public async Task JobToBeExecuted(IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await Console.Out.WriteLineAsync("job每次执行之后调用");
+        }
+
+        //job执行结束之后调用
+        public async Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            count++;
+            await Console.Out.WriteLineAsync("job执行结束之后调用  " + count);
+            if (count ==6)
+            {
+                count = 0;
+                var manage = new ScheduleManage();
+                var model = manage.GetScheduleModel(context.JobDetail.Key.Group, context.JobDetail.Key.Name);
+                new ClientManage().ClientSend(model.JobId);
+            }
+         
+        }
+    }
+
+}

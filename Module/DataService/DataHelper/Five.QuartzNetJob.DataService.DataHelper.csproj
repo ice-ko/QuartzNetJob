@@ -9,8 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\QuartzNet\Entity\QuartzNet.Entity.csproj" />
-    <ProjectReference Include="..\..\QuartzNet\QuartzNet3\QuartzNet3.Core.csproj" />
     <ProjectReference Include="..\..\Utils\Tool\Five.QuartzNetJob.Utils.Tool.csproj" />
     <ProjectReference Include="..\Models\Five.QuartzNetJob.DataService.Models.csproj" />
   </ItemGroup>

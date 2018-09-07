@@ -22,7 +22,7 @@ namespace Five.QuartzNetJob.DataService.Models
         /// </summary>
         public string JobGroup { get; set; }
         /// <summary>
-        /// 状态， 0 停止；1 启用
+        /// 状态， 0 暂停任务；1 启用任务
         /// </summary>
         public int JobStatus { get; set; }
         /// <summary>
@@ -73,5 +73,9 @@ namespace Five.QuartzNetJob.DataService.Models
         /// job调用外部的url
         /// </summary>
         public string Url { get; set; }
+        /// <summary>
+        /// 该字段表示是否被删除(0-删除,1-未删除)，默认为1
+        /// </summary>
+        public int Valid { get; set; }=1;
     }
 }
