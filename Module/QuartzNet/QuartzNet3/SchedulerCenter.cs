@@ -170,6 +170,10 @@ namespace QuartzNet3.Core
                 {
                     trigger = CreateSimpleTrigger(m);
                 }
+                // 设置监听器
+                JobListener listener = new JobListener();
+                // IMatcher<JobKey> matcher = KeyMatcher<JobKey>.KeyEquals(job.Key);
+                this.Scheduler.Result.ListenerManager.AddJobListener(listener, GroupMatcher<JobKey>.AnyGroup());
                 // 告诉Quartz使用我们的触发器来安排作业
                 await this.Scheduler.Result.ScheduleJob(job, trigger);
 

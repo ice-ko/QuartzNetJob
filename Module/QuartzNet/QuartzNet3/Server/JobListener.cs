@@ -26,15 +26,15 @@ namespace QuartzNet3.Core.Server
         public async Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException, CancellationToken cancellationToken = default(CancellationToken))
         {
             count++;
+            var manage = new ScheduleManage();
+            var model = manage.GetScheduleModel(context.JobDetail.Key.Group, context.JobDetail.Key.Name);
             await Console.Out.WriteLineAsync("job执行结束之后调用  " + count);
-            if (count ==6)
+            if (model.RunTimes != 0 && count == model.RunTimes)
             {
                 count = 0;
-                var manage = new ScheduleManage();
-                var model = manage.GetScheduleModel(context.JobDetail.Key.Group, context.JobDetail.Key.Name);
                 new ClientManage().ClientSend(model.JobId);
             }
-         
+
         }
     }
 
